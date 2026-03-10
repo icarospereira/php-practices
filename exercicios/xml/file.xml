@@ -1,0 +1,27 @@
+<?xml version='1.0' standalone='yes'?>
+<data>
+    <filmes>
+        <filme>
+            <titulo>Die Hard - Assalto ao Arranha-Céus</titulo>
+            <personagens>
+                <personagem>
+                    <nome>John McClane</nome>
+                    <ator> Bruce Willis </ator>
+                </personagem>
+                <personagem>
+                    <nome> Hans Gruber </nome>
+                    <ator> Alan Rickman </ator>
+                </personagem>
+            </personagens>
+            <argumento>
+                Um policia que fica preso num prédio que está a ser roubado e tem
+                de salvar a situação.
+            </argumento>
+            <grandes-linhas>
+                <linha>Filme policial com muita ação</linha>
+            </grandes-linhas>
+            <pontuacao tipo="polegares">8</pontuacao>
+            <pontuacao tipo="estrelas">5</pontuacao>
+        </filme>
+    </filmes>
+</data>
