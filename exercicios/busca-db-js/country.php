@@ -20,44 +20,73 @@
     </p>
 
     <script type="text/javascript">
+        
+        const countrySelect = document.getElementById('countries');
+        const provinceWrapper = document.getElementById('provinceP');
+        const provinceSelect = document.getElementById('provinces');
 
+        
+        const resetProvinceSelect = () => {
+            provinceWrapper.style.color = 'lightgrey';
+            provinceSelect.disabled = true;
+            provinceSelect.innerHTML = '';
+        };
 
-        const country = document.getElementById("countries");
-        const provinceP = document.getElementById('provinceP');
-        const provincesOpts = document.getElementById('provinces');
-        provinceP.style.color = 'lightgrey';
-        provincesOpts.disabled = true;
+        resetProvinceSelect();
 
-        country.addEventListener('change', async (event) => {           
-            const countryValue = event.target.value;  
+        countrySelect.addEventListener('change', async (event) => {
+            const countryValue = event.target.value.trim();
             
+            if (!countryValue) {
+                resetProvinceSelect();
+                return;
+            }
+
             try {
+                const url = `http://localhost/php/exercicios/busca-db-js/provinces.api.php?country=${encodeURIComponent(countryValue)}`;
+                const response = await fetch(url);
 
-                const response = await fetch(`http://localhost/php/exercicios/busca-db-js/provinces.api.php?country=${countryValue}`);
-                if (!response.ok) throw new Error('Falha na comunicação com o servidor');
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: Falha na comunicação com o servidor`);
+                }
+
                 const provincesList = await response.json();
-                console.log(provincesList);
-    
-                provinceP.style.color = 'black';
-                provincesOpts.disabled = false;
-                provincesOpts.innerHTML = " ";
-                o = document.createElement('option');                
-                o.disabled = true;
-                o.selected = true;
-                o.text = 'Província...';
-                provincesOpts.appendChild(o);
 
-                for (let i = 0; i < provincesList.length; i++) {
+                
+                if (!Array.isArray(provincesList) || provincesList.length === 0) {
+                    console.warn('Nenhuma província encontrada');
+                    resetProvinceSelect();
+                    return;
+                }
+
+                const fragment = document.createDocumentFragment();
+                
+                const defaultOption = document.createElement('option');
+                defaultOption.disabled = true;
+                defaultOption.selected = true;
+                defaultOption.textContent = 'Província...';
+                fragment.appendChild(defaultOption);
+                
+                provincesList.forEach(({ province }) => {
                     const option = document.createElement('option');
-                    option.text = provincesList[i].province;
-                    provincesOpts.appendChild(option);
-                };
+                    option.textContent = province;
+                    option.value = province;
+                    fragment.appendChild(option);
+                });
+
+                provinceSelect.innerHTML = '';
+                provinceSelect.appendChild(fragment);
+                
+
+                
+                provinceWrapper.style.color = 'black';
+                provinceSelect.disabled = false;
 
             } catch (error) {
-                console.error("Erro ao buscar dados:", error.message);
+                console.error('Erro ao buscar províncias:', error.message);
+                resetProvinceSelect();
             }
         });
-
     </script>
 </body>
 
